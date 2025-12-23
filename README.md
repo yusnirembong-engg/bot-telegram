@@ -1,1 +1,14 @@
-# bot-telegram
+# Telegram Auto Text (Telethon User API)
+
+Script auto broadcast & auto reply Telegram menggunakan akun user (Telethon).
+
+## ⚙️ Kebutuhan
+- Python 3.9+
+- Akun Telegram aktif
+- Telegram API ID & API HASH
+
+## 📦 Install
+```bash
+git clone https://github.com/USERNAME/telethon-auto-text.git
+cd telethon-auto-text
+pip install -r requirements.txt

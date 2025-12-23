@@ -1,17 +1,11 @@
 # Telegram User API (Telethon) - Fixed Version for GitHub
 from telethon import TelegramClient, events, errors
+from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
 from datetime import datetime, timedelta
 import psutil
 
 # ====== CONFIG ======
-api_id = 123456   # Ganti sendiri
-api_hash = "YOUR_API_HASH"
-phone_number = "+62..."  # Ganti sendiri
-session_name = "session_tele_user"
-
-GROUP_IDS = []  # Tambahkan ID grup nanti di GitHub
-GROUP_MESSAGES = []  # Tambahkan teks broadcast nanti di GitHub
 INTERVAL = 30 * 60  # 30 menit
 MAX_RETRIES = 3
 USER_STATE_FILE = "user_state.json"
@@ -165,16 +159,46 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
         except Exception as e:
             write_log(f"Gagal kirim pesan ke {uid}: {e}")
 
+# ====== MANUAL LOGIN ======
+async def manual_login():
+    api_id = int(input("Masukkan API ID      : "))
+    api_hash = input("Masukkan API HASH    : ")
+    phone_number = input("Masukkan No Telegram: ")
+
+    session_name = f"session_{phone_number.replace('+','')}"
+    client = TelegramClient(session_name, api_id, api_hash)
+    await client.connect()
+
+    if not await client.is_user_authorized():
+        await client.send_code_request(phone_number)
+        code = input("Masukkan OTP/Token  : ")
+        try:
+            await client.sign_in(phone_number, code)
+        except SessionPasswordNeededError:
+            pw = input("Password 2FA        : ")
+            await client.sign_in(password=pw)
+
+    write_log("LOGIN SUKSES - SESSION BARU")
+    return client
+
 # ====== MAIN LOOP ======
 async def main():
-    client = TelegramClient(session_name, api_id, api_hash)
-    await client.start(phone=phone_number)
-    write_log("LOGIN SUKSES - SESSION BARU")
+    client = await manual_login()
 
-    # Gunakan placeholder kosong, nanti di GitHub diisi
-    FIRST_MESSAGE = ""
-    SECOND_MESSAGE = ""
-    PHOTO_REMINDER = ""
+    # Setelah login berhasil, input ID grup dan teks broadcast
+    GROUP_IDS_INPUT = input("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
+    GROUP_IDS = [int(x.strip()) for x in GROUP_IDS_INPUT.split(",")]
+
+    BROADCAST_COUNT = int(input("Berapa variasi teks broadcast? : "))
+    GROUP_MESSAGES = []
+    for i in range(BROADCAST_COUNT):
+        msg = input(f"Teks broadcast ke-{i+1}: ")
+        GROUP_MESSAGES.append(msg)
+
+    # Placeholder auto-reply (bisa diedit nanti)
+    FIRST_MESSAGE = "Pesan pertama untuk user baru"
+    SECOND_MESSAGE = "Pesan setelah user kirim foto"
+    PHOTO_REMINDER = "Reminder kirim foto"
 
     await setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER)
 

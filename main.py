@@ -1,4 +1,4 @@
-# Telegram User API (Telethon) - Fixed Version for GitHub
+# Telegram User API (Telethon) - CMD Interactive Version with USER_ID & BOT_ID
 from telethon import TelegramClient, events, errors
 from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
@@ -83,7 +83,7 @@ async def send_message_safe(client, gid, msg):
     write_log(f"GAGAL KIRIM -> {gid}")
     return False
 
-# ====== PRIVATE HANDLER FIXED ======
+# ====== PRIVATE HANDLER ======
 async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER):
     @client.on(events.NewMessage)
     async def handler(event):
@@ -185,7 +185,11 @@ async def manual_login():
 async def main():
     client = await manual_login()
 
-    # Setelah login berhasil, input ID grup dan teks broadcast
+    # Input USER_ID & BOT_ID
+    USER_ID = input("Masukkan USER_ID untuk FIRST_MESSAGE: ")
+    BOT_ID = input("Masukkan BOT_ID untuk SECOND_MESSAGE: ")
+
+    # Input ID grup & teks broadcast
     GROUP_IDS_INPUT = input("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
     GROUP_IDS = [int(x.strip()) for x in GROUP_IDS_INPUT.split(",")]
 
@@ -195,10 +199,34 @@ async def main():
         msg = input(f"Teks broadcast ke-{i+1}: ")
         GROUP_MESSAGES.append(msg)
 
-    # Placeholder auto-reply (bisa diedit nanti)
-    FIRST_MESSAGE = "Pesan pertama untuk user baru"
-    SECOND_MESSAGE = "Pesan setelah user kirim foto"
-    PHOTO_REMINDER = "Reminder kirim foto"
+    # FIRST_MESSAGE & SECOND_MESSAGE dengan placeholder
+    FIRST_MESSAGE = (
+        f"Halo bosku! 👋\n\n"
+        f"Untuk bisa klaim freebet hari ini, bantu lakukan langkah berikut:\n"
+        f"1️⃣ Kirim kata-kata di bawah ini ke 5 grup aktif yang kamu ikuti:\n\n"
+        f"🎁 INFO FREEBET HARI INI 🎁\n"
+        f"Gratis tanpa deposit, langsung klaim di {USER_ID}!\n"
+        f"Kesempatan terbatas ⚡\n\n"
+        f"Setelah selesai, balik ke sini untuk konfirmasi agar freebetmu bisa diproses. Terima kasih bosku! 💎"
+    )
+
+    SECOND_MESSAGE = (
+        f"✨ Sudah siap bosku! ✨\n\n"
+        f"Klik ID bot resmi: {BOT_ID}\n"
+        f"Panduan otomatis tersedia di bot, jadi proses klaim lebih cepat dan mudah.\n\n"
+        f"1️⃣ Tekan START di bot.\n"
+        f"2️⃣ Ikuti langkah-langkah yang ditampilkan.\n"
+        f"3️⃣ Setelah mengisi data, kamu akan otomatis terhubung ke admin pusat.\n\n"
+        f"Ajukan ID akses, dan sistem akan memproses freebetmu secara otomatis.\n\n"
+        f"⚡ Cepat, Praktis, Tanpa Ribet! Rasakan pengalaman klaim freebet premium sekarang 🚀"
+    )
+
+    PHOTO_REMINDER = (
+        "🙏 Hai bosku!\n\n"
+        "Sebelum bisa lanjut, wajib kirim bukti foto ya bosku. 📸\n"
+        "Bukti ini digunakan untuk konfirmasi bahwa teks sudah dibagikan ke 5 grup aktifmu.\n\n"
+        "Setelah mengirim foto, admin akan segera memproses freebetmu. Terima kasih!"
+    )
 
     await setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER)
 

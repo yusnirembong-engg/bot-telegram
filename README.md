@@ -7,6 +7,9 @@ Script auto broadcast & auto reply Telegram menggunakan akun user (Telethon).
 - Akun Telegram aktif
 - Telegram API ID & API HASH
 
+## Downlaod
+- download git https://git-scm.com/install/windows
+
 ## 📦 Install
 ```bash
 git clone https://github.com/USERNAME/telethon-auto-text.git

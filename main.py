@@ -76,7 +76,7 @@ def input_id_list(prompt):
         valid = True
         for p in parts:
             p = p.strip()
-            if not p.isdigit():
+            if not p.lstrip('-').isdigit() or p == '-':
                 print(f"⚠️  ID tidak valid: {p}")
                 valid = False
                 break

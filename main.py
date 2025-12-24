@@ -1,4 +1,4 @@
-# Telegram User API (Telethon) - CMD Interactive Version with USER_ID & BOT_ID
+# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs
 from telethon import TelegramClient, events, errors
 from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
@@ -51,6 +51,15 @@ def log_system_usage():
     cpu = psutil.cpu_percent()
     ram = psutil.virtual_memory().percent
     write_log(f"Resource Usage -> CPU: {cpu}% | RAM: {ram}%")
+
+# ====== INPUT UTILITY ======
+def input_required(prompt):
+    value = ""
+    while not value.strip():
+        value = input(prompt).strip()
+        if not value:
+            print("⚠️  Input wajib diisi!")
+    return value
 
 # ====== CHECK GROUP ======
 async def check_group(client, gid):
@@ -161,9 +170,9 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
 
 # ====== MANUAL LOGIN ======
 async def manual_login():
-    api_id = int(input("Masukkan API ID      : "))
-    api_hash = input("Masukkan API HASH    : ")
-    phone_number = input("Masukkan No Telegram: ")
+    api_id = int(input_required("Masukkan API ID      : "))
+    api_hash = input_required("Masukkan API HASH    : ")
+    phone_number = input_required("Masukkan No Telegram: ")
 
     session_name = f"session_{phone_number.replace('+','')}"
     client = TelegramClient(session_name, api_id, api_hash)
@@ -171,11 +180,11 @@ async def manual_login():
 
     if not await client.is_user_authorized():
         await client.send_code_request(phone_number)
-        code = input("Masukkan OTP/Token  : ")
+        code = input_required("Masukkan OTP/Token  : ")
         try:
             await client.sign_in(phone_number, code)
         except SessionPasswordNeededError:
-            pw = input("Password 2FA        : ")
+            pw = input_required("Password 2FA        : ")
             await client.sign_in(password=pw)
 
     write_log("LOGIN SUKSES - SESSION BARU")
@@ -186,47 +195,23 @@ async def main():
     client = await manual_login()
 
     # Input USER_ID & BOT_ID
-    USER_ID = input("Masukkan USER_ID untuk FIRST_MESSAGE: ")
-    BOT_ID = input("Masukkan BOT_ID untuk SECOND_MESSAGE: ")
+    USER_ID = input_required("Masukkan USER_ID untuk FIRST_MESSAGE: ")
+    BOT_ID = input_required("Masukkan BOT_ID untuk SECOND_MESSAGE: ")
 
     # Input ID grup & teks broadcast
-    GROUP_IDS_INPUT = input("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
+    GROUP_IDS_INPUT = input_required("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
     GROUP_IDS = [int(x.strip()) for x in GROUP_IDS_INPUT.split(",")]
 
-    BROADCAST_COUNT = int(input("Berapa variasi teks broadcast? : "))
+    BROADCAST_COUNT = int(input_required("Berapa variasi teks broadcast? : "))
     GROUP_MESSAGES = []
     for i in range(BROADCAST_COUNT):
-        msg = input(f"Teks broadcast ke-{i+1}: ")
+        msg = input_required(f"Teks broadcast ke-{i+1}: ")
         GROUP_MESSAGES.append(msg)
 
     # FIRST_MESSAGE & SECOND_MESSAGE dengan placeholder
-    FIRST_MESSAGE = (
-        f"Halo bosku! 👋\n\n"
-        f"Untuk bisa klaim freebet hari ini, bantu lakukan langkah berikut:\n"
-        f"1️⃣ Kirim kata-kata di bawah ini ke 5 grup aktif yang kamu ikuti:\n\n"
-        f"🎁 INFO FREEBET HARI INI 🎁\n"
-        f"Gratis tanpa deposit, langsung klaim di {USER_ID}!\n"
-        f"Kesempatan terbatas ⚡\n\n"
-        f"Setelah selesai, balik ke sini untuk konfirmasi agar freebetmu bisa diproses. Terima kasih bosku! 💎"
-    )
-
-    SECOND_MESSAGE = (
-        f"✨ Sudah siap bosku! ✨\n\n"
-        f"Klik ID bot resmi: {BOT_ID}\n"
-        f"Panduan otomatis tersedia di bot, jadi proses klaim lebih cepat dan mudah.\n\n"
-        f"1️⃣ Tekan START di bot.\n"
-        f"2️⃣ Ikuti langkah-langkah yang ditampilkan.\n"
-        f"3️⃣ Setelah mengisi data, kamu akan otomatis terhubung ke admin pusat.\n\n"
-        f"Ajukan ID akses, dan sistem akan memproses freebetmu secara otomatis.\n\n"
-        f"⚡ Cepat, Praktis, Tanpa Ribet! Rasakan pengalaman klaim freebet premium sekarang 🚀"
-    )
-
-    PHOTO_REMINDER = (
-        "🙏 Hai bosku!\n\n"
-        "Sebelum bisa lanjut, wajib kirim bukti foto ya bosku. 📸\n"
-        "Bukti ini digunakan untuk konfirmasi bahwa teks sudah dibagikan ke 5 grup aktifmu.\n\n"
-        "Setelah mengirim foto, admin akan segera memproses freebetmu. Terima kasih!"
-    )
+    FIRST_MESSAGE = f"Halo bosku! 👋\n\nUntuk klaim freebet hari ini, gunakan {USER_ID}."
+    SECOND_MESSAGE = f"Klik ID bot resmi: {BOT_ID} untuk panduan klaim otomatis."
+    PHOTO_REMINDER = "🙏 Kirim bukti foto agar bisa klaim freebet."
 
     await setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER)
 

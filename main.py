@@ -244,10 +244,30 @@ async def main():
         msg = input_required(f"Teks broadcast ke-{i+1}: ")
         GROUP_MESSAGES.append(msg)
 
-    # FIRST_MESSAGE & SECOND_MESSAGE
-    FIRST_MESSAGE = f"Halo bosku! 👋\n\nUntuk klaim freebet hari ini, gunakan {USER_ID}."
-    SECOND_MESSAGE = f"Klik ID bot resmi: {BOT_ID} untuk panduan klaim otomatis."
-    PHOTO_REMINDER = "🙏 Kirim bukti foto agar bisa klaim freebet."
+    FIRST_MESSAGE = (
+        "Halo bosku! 👋\n\n"
+        "Untuk bisa klaim freebet hari ini, bantu lakukan langkah berikut:\n"
+        "1️⃣ Kirim kata-kata di bawah ini ke 5 grup aktif yang kamu ikuti:\n\n"
+        "🎁 INFO FREEBET HARI INI 🎁\n"
+        "Gratis tanpa deposit, langsung klaim di {USER_ID}\n"
+        "Kesempatan terbatas ⚡\n\n"
+        "Setelah selesai, balik ke sini untuk konfirmasi agar freebetmu bisa diproses. Terima kasih bosku! 💎")
+
+    SECOND_MESSAGE = (
+        "✨ Sudah siap bosku! ✨\n\n"
+        "Klik ID bot resmi: {BOT_ID} \n"
+        "Panduan otomatis tersedia di bot, jadi proses klaim lebih cepat dan mudah.\n\n"
+        "1️⃣ Tekan START di bot.\n"
+        "2️⃣ Ikuti langkah-langkah yang ditampilkan.\n"
+        "3️⃣ Setelah mengisi data, kamu akan otomatis terhubung ke admin pusat.\n\n"
+        "Ajukan ID akses, dan sistem akan memproses freebetmu secara otomatis.\n\n"
+        "⚡ Cepat, Praktis, Tanpa Ribet! Rasakan pengalaman klaim freebet premium sekarang 🚀")
+    
+    PHOTO_REMINDER = (
+        "🙏 Hai bosku!\n\n"
+        "Sebelum bisa lanjut, wajib kirim bukti foto ya bosku. 📸\n"
+        "Bukti ini digunakan untuk konfirmasi bahwa teks sudah dibagikan ke 5 grup aktifmu.\n\n"
+        "Setelah mengirim foto, admin akan segera memproses freebetmu. Terima kasih!")
 
     await setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER)
 

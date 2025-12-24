@@ -1,4 +1,3 @@
-# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs & Full Validation
 from telethon import TelegramClient, events, errors
 from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
@@ -47,10 +46,14 @@ def write_log(text):
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(f"{t} - {text}\n")
 
+# PERBAIKAN: Tambahkan try-except untuk psutil agar tidak crash jika library tidak ada
 def log_system_usage():
-    cpu = psutil.cpu_percent()
-    ram = psutil.virtual_memory().percent
-    write_log(f"Resource Usage -> CPU: {cpu}% | RAM: {ram}%")
+    try:
+        cpu = psutil.cpu_percent()
+        ram = psutil.virtual_memory().percent
+        write_log(f"Resource Usage -> CPU: {cpu}% | RAM: {ram}%")
+    except ImportError:
+        write_log("Resource Usage -> psutil not available")
 
 # ====== INPUT VALIDATION ======
 def input_required(prompt):
@@ -129,6 +132,21 @@ async def send_message_safe(client, gid, msg):
     write_log(f"GAGAL KIRIM -> {gid}")
     return False
 
+# PERBAIKAN: Fungsi baru untuk handling retry di handler pribadi (mengatasi FloodWaitError)
+async def send_message_with_retry(client, entity, message, uid, max_retries=3):
+    for attempt in range(1, max_retries + 1):
+        try:
+            await client.send_message(entity, message)
+            return  # Sukses, keluar
+        except errors.FloodWaitError as e:
+            wait_time = e.seconds + 5  # Tambah buffer 5 detik
+            write_log(f"FloodWaitError untuk {uid} (Attempt {attempt}): Tunggu {wait_time}s")
+            await asyncio.sleep(wait_time)
+        except Exception as e:
+            write_log(f"Error lain kirim ke {uid} (Attempt {attempt}): {e}")
+            await asyncio.sleep(5)  # Jeda singkat untuk error lain
+    write_log(f"Gagal kirim setelah {max_retries} retry ke {uid}")
+
 # ====== PRIVATE HANDLER ======
 async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER):
     @client.on(events.NewMessage)
@@ -155,7 +173,8 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
                     'sent_second': False
                 }
                 save_user_state()
-                await client.send_message(entity, FIRST_MESSAGE)
+                # PERBAIKAN: Ganti dengan send_message_with_retry untuk handling flood
+                await send_message_with_retry(client, entity, FIRST_MESSAGE, uid)
                 write_log(f"FIRST_MESSAGE terkirim ke user baru {uid}")
                 return
 
@@ -194,14 +213,21 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
                     user_state[uid]['sent_second'] = True
                     async with state_lock:
                         save_user_state()
-                    await client.send_message(entity, SECOND_MESSAGE)
+                    # PERBAIKAN: Ganti dengan send_message_with_retry
+                    await send_message_with_retry(client, entity, SECOND_MESSAGE, uid)
                     write_log(f"SECOND_MESSAGE terkirim ke {uid}")
+                    # PERBAIKAN: Tambahkan jeda kecil untuk mengurangi risiko flood
+                    await asyncio.sleep(1)
             elif status == 'wait_photo':
-                await client.send_message(entity, PHOTO_REMINDER)
+                # PERBAIKAN: Ganti dengan send_message_with_retry
+                await send_message_with_retry(client, entity, PHOTO_REMINDER, uid)
                 write_log(f"PHOTO_REMINDER terkirim ke {uid}")
+                await asyncio.sleep(1)
             else:
-                await client.send_message(entity, FIRST_MESSAGE)
+                # PERBAIKAN: Ganti dengan send_message_with_retry
+                await send_message_with_retry(client, entity, FIRST_MESSAGE, uid)
                 write_log(f"Fallback FIRST_MESSAGE terkirim ke {uid}")
+                await asyncio.sleep(1)
         except Exception as e:
             write_log(f"Gagal kirim pesan ke {uid}: {e}")
 
@@ -238,7 +264,11 @@ async def main():
     # Input ID grup & teks broadcast
     GROUP_IDS = input_id_list("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
 
+    # PERBAIKAN: Validasi BROADCAST_COUNT minimal 1 untuk hindari IndexError
     BROADCAST_COUNT = input_int_required("Berapa variasi teks broadcast? : ")
+    if BROADCAST_COUNT < 1:
+        print("⚠️  Minimal 1 variasi!")
+        BROADCAST_COUNT = 1
     GROUP_MESSAGES = []
     for i in range(BROADCAST_COUNT):
         msg = input_required(f"Teks broadcast ke-{i+1}: ")

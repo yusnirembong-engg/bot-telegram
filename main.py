@@ -1,4 +1,4 @@
-# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs & Validation
+# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs & Full Validation
 from telethon import TelegramClient, events, errors
 from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
@@ -83,6 +83,20 @@ def input_id_list(prompt):
             ids.append(int(p))
         if valid:
             return ids
+
+def input_phone_number(prompt):
+    while True:
+        phone = input_required(prompt)
+        phone_clean = phone.replace(" ", "").replace("-", "")
+        if phone_clean.startswith("0"):
+            phone_clean = "+62" + phone_clean[1:]
+        elif not phone_clean.startswith("+"):
+            print("⚠️  Nomor harus diawali 0 atau +kode_negara (misal +62)")
+            continue
+        if not phone_clean[1:].isdigit():
+            print("⚠️  Nomor harus terdiri dari angka setelah +")
+            continue
+        return phone_clean
 
 # ====== CHECK GROUP ======
 async def check_group(client, gid):
@@ -195,7 +209,7 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
 async def manual_login():
     api_id = input_int_required("Masukkan API ID      : ")
     api_hash = input_required("Masukkan API HASH    : ")
-    phone_number = input_required("Masukkan No Telegram: ")
+    phone_number = input_phone_number("Masukkan No Telegram: ")
 
     session_name = f"session_{phone_number.replace('+','')}"
     client = TelegramClient(session_name, api_id, api_hash)

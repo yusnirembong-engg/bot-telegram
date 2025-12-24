@@ -12,7 +12,7 @@ Script auto broadcast & auto reply Telegram menggunakan akun user (Telethon).
 
 ## 📦 Install
 ```bash
-git clone https://github.com/USERNAME/telethon-auto-text.git
+git clone https://github.com/yusnirembong-engg/bot-telegram
 cd bot-telegram
 pip install -r requirements.txt
 pytho main.py

@@ -1,4 +1,4 @@
-# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs
+# Telegram User API (Telethon) - CMD Interactive Version with Required Inputs & Validation
 from telethon import TelegramClient, events, errors
 from telethon.errors import SessionPasswordNeededError
 import asyncio, random, json, os
@@ -52,7 +52,7 @@ def log_system_usage():
     ram = psutil.virtual_memory().percent
     write_log(f"Resource Usage -> CPU: {cpu}% | RAM: {ram}%")
 
-# ====== INPUT UTILITY ======
+# ====== INPUT VALIDATION ======
 def input_required(prompt):
     value = ""
     while not value.strip():
@@ -60,6 +60,29 @@ def input_required(prompt):
         if not value:
             print("⚠️  Input wajib diisi!")
     return value
+
+def input_int_required(prompt):
+    while True:
+        value = input_required(prompt)
+        if value.isdigit():
+            return int(value)
+        print("⚠️  Harus berupa angka!")
+
+def input_id_list(prompt):
+    while True:
+        raw = input_required(prompt)
+        parts = raw.split(",")
+        ids = []
+        valid = True
+        for p in parts:
+            p = p.strip()
+            if not p.isdigit():
+                print(f"⚠️  ID tidak valid: {p}")
+                valid = False
+                break
+            ids.append(int(p))
+        if valid:
+            return ids
 
 # ====== CHECK GROUP ======
 async def check_group(client, gid):
@@ -84,7 +107,7 @@ async def send_message_safe(client, gid, msg):
             write_log(f"SKIP (NO ACCESS) -> {gid}")
             return False
         except errors.FloodWaitError as e:
-            write_log(f"FLOODWAIT {e.seconds}s")
+            write_log(f"FLOODWAIT {e.seconds}s - menunggu...")
             await asyncio.sleep(e.seconds + 5)
         except Exception as e:
             write_log(f"ERROR {gid} (Attempt {attempt}): {e}")
@@ -170,7 +193,7 @@ async def setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REM
 
 # ====== MANUAL LOGIN ======
 async def manual_login():
-    api_id = int(input_required("Masukkan API ID      : "))
+    api_id = input_int_required("Masukkan API ID      : ")
     api_hash = input_required("Masukkan API HASH    : ")
     phone_number = input_required("Masukkan No Telegram: ")
 
@@ -199,16 +222,15 @@ async def main():
     BOT_ID = input_required("Masukkan BOT_ID untuk SECOND_MESSAGE: ")
 
     # Input ID grup & teks broadcast
-    GROUP_IDS_INPUT = input_required("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
-    GROUP_IDS = [int(x.strip()) for x in GROUP_IDS_INPUT.split(",")]
+    GROUP_IDS = input_id_list("Masukkan ID grup (pisahkan koma jika lebih dari 1):\n> ")
 
-    BROADCAST_COUNT = int(input_required("Berapa variasi teks broadcast? : "))
+    BROADCAST_COUNT = input_int_required("Berapa variasi teks broadcast? : ")
     GROUP_MESSAGES = []
     for i in range(BROADCAST_COUNT):
         msg = input_required(f"Teks broadcast ke-{i+1}: ")
         GROUP_MESSAGES.append(msg)
 
-    # FIRST_MESSAGE & SECOND_MESSAGE dengan placeholder
+    # FIRST_MESSAGE & SECOND_MESSAGE
     FIRST_MESSAGE = f"Halo bosku! 👋\n\nUntuk klaim freebet hari ini, gunakan {USER_ID}."
     SECOND_MESSAGE = f"Klik ID bot resmi: {BOT_ID} untuk panduan klaim otomatis."
     PHOTO_REMINDER = "🙏 Kirim bukti foto agar bisa klaim freebet."

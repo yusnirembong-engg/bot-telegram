@@ -282,25 +282,30 @@ async def main():
         f"🎁 INFO FREEBET HARI INI 🎁\n"
         f"Gratis tanpa deposit, langsung klaim di {USER_ID}\n"
         f"Kesempatan terbatas ⚡\n\n"
-        f"Setelah selesai, balik ke sini untuk konfirmasi agar freebetmu bisa diproses. Terima kasih bosku! 💎"
+        f"2️⃣ Setelah selesai, balik ke sini dan kirim **bukti foto**.\n"
+        f"3️⃣ Setelah bukti diterima, kamu akan otomatis mendapatkan **ID VIP** eksklusif.\n"
+        f"4️⃣ Admin akan segera memproses **freebet** kamu 🎉\n\n"
+        f"⚡ Dengan **ID VIP**, proses klaim menjadi lebih cepat dan eksklusif! Terima kasih bosku 💎"
     )
 
-    SECOND_MESSAGE = (
+    SECOND_MESSAGE = = (
         f"✨ Sudah siap bosku! ✨\n\n"
         f"Klik ID bot resmi: {BOT_ID}\n"
-        f"Panduan otomatis tersedia di bot, jadi proses klaim lebih cepat dan mudah.\n\n"
+        f"Panduan otomatis tersedia di bot, jadi proses klaim freebetmu lebih cepat dan mudah.\n\n"
         f"1️⃣ Tekan START di bot.\n"
         f"2️⃣ Ikuti langkah-langkah yang ditampilkan.\n"
-        f"3️⃣ Setelah mengisi data, kamu akan otomatis terhubung ke admin pusat.\n\n"
-        f"Ajukan ID akses, dan sistem akan memproses freebetmu secara otomatis.\n\n"
-        f"⚡ Cepat, Praktis, Tanpa Ribet! Rasakan pengalaman klaim freebet premium sekarang 🚀"
+        f"3️⃣ Setelah mendaftar, kamu akan mendapatkan **ID VIP** yang eksklusif.\n"
+        f"4️⃣ ID VIP-mu akan otomatis terhubung ke admin pusat untuk memproses freebet.\n\n"
+        f"⚡ Cepat, Praktis, Tanpa Ribet! Klaim freebetmu sekarang dengan **ID VIP** eksklusif 🚀"
     )
     
     PHOTO_REMINDER = (
         "🙏 Hai bosku!\n\n"
-        "Sebelum bisa lanjut, wajib kirim bukti foto ya bosku. 📸\n"
-        "Bukti ini digunakan untuk konfirmasi bahwa teks sudah dibagikan ke 5 grup aktifmu.\n\n"
-        "Setelah mengirim foto, admin akan segera memproses freebetmu. Terima kasih!"
+        "Sebelum bisa lanjut, mohon kirim **bukti foto** terlebih dahulu. 📸\n"
+        "Bukti ini digunakan untuk memastikan bahwa teks sudah dibagikan ke **5 grup aktifmu**.\n\n"
+        "Setelah foto diterima, kamu akan otomatis mendapatkan **ID VIP** eksklusif di bot, "
+        "dan admin akan segera memproses **freebet** kamu. 🎉\n\n"
+        "⚡ Dengan **ID VIP**, kamu bisa menikmati proses klaim yang lebih cepat dan eksklusif!"
     )
 
     await setup_private_handler(client, FIRST_MESSAGE, SECOND_MESSAGE, PHOTO_REMINDER)

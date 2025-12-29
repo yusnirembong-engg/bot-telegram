@@ -288,7 +288,7 @@ async def main():
         f"⚡ Dengan **ID VIP**, proses klaim menjadi lebih cepat dan eksklusif! Terima kasih bosku 💎"
     )
 
-    SECOND_MESSAGE = = (
+    SECOND_MESSAGE = (
         f"✨ Sudah siap bosku! ✨\n\n"
         f"Klik ID bot resmi: {BOT_ID}\n"
         f"Panduan otomatis tersedia di bot, jadi proses klaim freebetmu lebih cepat dan mudah.\n\n"

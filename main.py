@@ -292,11 +292,12 @@ async def main():
         f"✨ Sudah siap bosku! ✨\n\n"
         f"Klik ID bot resmi: {BOT_ID}\n"
         f"Panduan otomatis tersedia di bot, jadi proses klaim freebetmu lebih cepat dan mudah.\n\n"
+        f"👉 <a href='https://majubopel2.com/_View/Register.aspx?ref=18E36F'>KLIK DI SINI UNTUK DAFTAR</a>\n\n"
         f"1️⃣ Tekan START di bot.\n"
         f"2️⃣ Ikuti langkah-langkah yang ditampilkan.\n"
-        f"3️⃣ Setelah mendaftar, kamu akan mendapatkan **ID VIP** yang eksklusif.\n"
-        f"4️⃣ ID VIP-mu akan otomatis terhubung ke admin pusat untuk memproses freebet.\n\n"
-        f"⚡ Cepat, Praktis, Tanpa Ribet! Klaim freebetmu sekarang dengan **ID VIP** eksklusif 🚀"
+        f"3️⃣ Setelah mendaftar, kamu akan mendapatkan ID VIP eksklusif.\n"
+        f"4️⃣ ID VIP-mu otomatis terhubung ke admin pusat.\n\n"
+        f"⚡ Cepat, Praktis, Tanpa Ribet!"
     )
     
     PHOTO_REMINDER = (
